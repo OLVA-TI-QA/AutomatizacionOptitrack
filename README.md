@@ -15,5 +15,5 @@ npm install
 To run the tests on Android emulator:
 
 ```sh
-npx npm run test:android
+npm run test:android
 ```

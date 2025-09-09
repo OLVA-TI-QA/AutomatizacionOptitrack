@@ -1,7 +1,8 @@
 export const NambarOption = {
-  Home: 'Home',
-  About: 'About',
-  Contact: 'Contact',
+  Gestiones: 'Gestiones',
+  Historial: 'Historial',
+  Offline: 'Offline',
+  Documentos: 'Documentos',
   Perfil: 'Perfil',
 } as const;
 
