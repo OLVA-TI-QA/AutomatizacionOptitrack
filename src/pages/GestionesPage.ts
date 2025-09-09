@@ -1,11 +1,11 @@
 import { Device, expect } from 'appwright';
-import { MobileBasePage } from '../pages/base/MobileBasePage';
+import { MobileBasePage } from './base/MobileBasePage';
 import { NambarOption } from '../types/InterfacesYEnums';
 
 /**
  * Página de Login para Appwright (móvil)
  */
-export class DashboardPage extends MobileBasePage {
+export class GestionesPage extends MobileBasePage {
     // Mensajes y constantes
     private static readonly MSG_INVALID_USERNAME = 'Your username is invalid!';
     private static readonly MSG_SUCCESS_TITLE = 'Logged In Successfully';
@@ -18,23 +18,31 @@ export class DashboardPage extends MobileBasePage {
 
     public async navbarOptions(nambarOption: NambarOption): Promise<void> {
         switch (nambarOption) {
+            case NambarOption.Gestiones:
+                console.log(`Otros valores`);
+                break;
+            case NambarOption.Historial:
+                const historialNavbar = await this.getFirstVisibleLocator([
+                    { type: 'id', value: 'com.olvati.optitrack2022:id/navigation_historial' },
+                    { type: 'xpath', value: '//android.widget.FrameLayout[@content-desc="Historial"]', options: { exact: false } }
+                ]);
+                await historialNavbar.tap();
+
+                break;
+            case NambarOption.Offline:
+                console.log(`Otros valores`);
+
+                break;
+            case NambarOption.Documentos:
+                console.log(`Otros valores`);
+
+                break;
             case NambarOption.Perfil:
                 const perfilNavbar = await this.getFirstVisibleLocator([
                     { type: 'id', value: 'com.olvati.optitrack2022:id/navigation_perfil' },
                     { type: 'xpath', value: '//android.widget.FrameLayout[@content-desc="Perfil"]', options: { exact: false } }
                 ]);
                 await perfilNavbar.tap();
-
-                break;
-            case NambarOption.Home:
-                console.log(`Otros valores`);
-                break;
-            case NambarOption.About:
-                console.log(`Otros valores`);
-
-                break;
-            case NambarOption.Contact:
-                console.log(`Otros valores`);
 
                 break;
         }
@@ -46,17 +54,17 @@ export class DashboardPage extends MobileBasePage {
 
     /** Verifica estado exitoso del login */
     public async validateSuccessfulLogin(): Promise<void> {
-        const successTextElement = this.locator('text', DashboardPage.MSG_SUCCESS_TITLE, { exact: false });
+        const successTextElement = this.locator('text', GestionesPage.MSG_SUCCESS_TITLE, { exact: false });
         await expect(successTextElement).toBeVisible();
         const actual = await successTextElement.getText();
-        expect(actual).toContain(DashboardPage.MSG_SUCCESS_TITLE);
+        expect(actual).toContain(GestionesPage.MSG_SUCCESS_TITLE);
     }
 
     /** Verifica error por usuario inválido */
     public async validateFailedLogin(): Promise<void> {
-        const errorTextElement = this.locator('text', DashboardPage.MSG_INVALID_USERNAME, { exact: false });
+        const errorTextElement = this.locator('text', GestionesPage.MSG_INVALID_USERNAME, { exact: false });
         await expect(errorTextElement).toBeVisible();
         const actual = await errorTextElement.getText();
-        expect(actual).toContain(DashboardPage.MSG_INVALID_USERNAME);
+        expect(actual).toContain(GestionesPage.MSG_INVALID_USERNAME);
     }
 }
