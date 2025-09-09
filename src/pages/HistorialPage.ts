@@ -1,5 +1,6 @@
 import { Device, expect } from 'appwright';
 import { MobileBasePage } from '../pages/base/MobileBasePage';
+import { TypeGestiones } from '../types/InterfacesYEnums';
 
 function sleep(seconds: number) {
     return new Promise(resolve => setTimeout(resolve, seconds * 1000));
@@ -104,5 +105,63 @@ export class HistorialPage extends MobileBasePage {
 
         // Finalmente, usa una aserción para verificar que el número total de elementos es mayor que 0
         expect(foundElementsCount).toBeGreaterThan(0);
+    }
+
+    /** Realiza la busqueda utilizando los filtros */
+    public async filtrarTipoGestiones(typeGestiones: TypeGestiones): Promise<void> {
+        const filtroTypeGestionesButton = this.locator('id', 'com.olvati.optitrack2022:id/fab_ingreso_manual');
+        await expect(filtroTypeGestionesButton).toBeVisible();
+        await filtroTypeGestionesButton.tap();
+        await sleep(5);
+
+        switch (typeGestiones) {
+            case TypeGestiones.Entregas:
+                const entregasOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Entregas"]', { exact: false });
+                await expect(entregasOption).toBeVisible();
+                await entregasOption.tap();
+
+                break;
+            case TypeGestiones.Recojos:
+                const recojosOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Recojos"]', { exact: false });
+                await expect(recojosOption).toBeVisible();
+                await recojosOption.tap();
+
+                break;
+            case TypeGestiones.GuiasLocal:
+                const guiaLocalOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Guias Local"]', { exact: false });
+                await expect(guiaLocalOption).toBeVisible();
+                await guiaLocalOption.tap();
+
+                break;
+            case TypeGestiones.GuiasNacional:
+                const guiaNacionalOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Guias Nacional"]', { exact: false });
+                await expect(guiaNacionalOption).toBeVisible();
+                await guiaNacionalOption.tap();
+
+                break;
+            case TypeGestiones.Todos:
+                const todosOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Todos"]', { exact: false });
+                await expect(todosOption).toBeVisible();
+                await todosOption.tap();
+
+                break;
+        }
+    }
+
+    public async validarFiltroEstados(isVisible: boolean): Promise<void> {
+        const filtroEstadosButton = this.locator('id', 'com.olvati.optitrack2022:id/fab_ingreso_manual');
+
+
+        if (isVisible) {
+            // Valida que exista al menos un elemento que coincida con el localizador.
+            // Esto es el equivalente a validar que el botón es "visible".
+            // La aserción esperará hasta que el conteo sea mayor o igual a 1.
+            expect(filtroEstadosButton).toBeGreaterThan(0);
+            // Alternativa: await expect(filtroEstadosButton.count()).toBeGreaterThanOrEqual(1);
+
+        } else {
+            // Valida que el conteo de elementos sea cero, es decir, que no existe.
+            expect(filtroEstadosButton).toEqual(0);
+        }
     }
 }
