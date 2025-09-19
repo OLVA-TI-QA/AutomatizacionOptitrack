@@ -17,3 +17,18 @@ export const TypeGestiones = {
 } as const;
 
 export type TypeGestiones = typeof TypeGestiones[keyof typeof TypeGestiones];
+
+export const TypeEstado = {
+  Parcial: 'PARCIAL',
+  Recogido: 'RECOGIDO',
+  NoRecogido: 'NO RECOGIDO',
+  Registrado: 'REGISTRADO',
+  Entregado: 'ENTREGADO',
+  Motivado: 'MOTIVADO',
+  Asignadp: 'ASIGNADO',
+  EnProcesoVerificacionMesaPartes: 'EN PROCESO DE VERIFICACION POR MESA PARTES',
+  Anulado: 'ANULADO',
+  Todos: 'TODOS',
+} as const;
+
+export type TypeEstado = typeof TypeEstado[keyof typeof TypeEstado];
