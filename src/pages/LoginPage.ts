@@ -6,7 +6,7 @@ import { MobileBasePage } from '../pages/base/MobileBasePage';
  */
 export class LoginPage extends MobileBasePage {
   // Mensajes y constantes
-  private static readonly MSG_INVALID_USERNAME = 'Your username is invalid!';
+  private static readonly MSG_INVALID_CREDENTIALS = 'Credenciales Incorrectas';
   private static readonly MSG_SUCCESS_TITLE_FROM_DASHBOARD = 'Lista de gestiones';
 
   constructor(device: Device) {
@@ -45,9 +45,12 @@ export class LoginPage extends MobileBasePage {
 
   /** Verifica error por usuario inválido */
   public async validateFailedLogin(): Promise<void> {
-    const errorTextElement = this.locator('text', LoginPage.MSG_INVALID_USERNAME, { exact: false });
+    const errorTextElement = this.locator('text', LoginPage.MSG_INVALID_CREDENTIALS, { exact: false });
     await expect(errorTextElement).toBeVisible();
-    const actual = await errorTextElement.getText();
-    expect(actual).toContain(LoginPage.MSG_INVALID_USERNAME);
+  }
+
+  public async validateIpDisplayed(): Promise<void> {
+    const ipText = await this.isVisible('id', 'com.olvati.optitrack2022:id/txtIp');
+    expect(ipText).toBeTruthy();
   }
 }
