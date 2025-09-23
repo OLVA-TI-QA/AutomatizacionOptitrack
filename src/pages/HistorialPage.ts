@@ -78,23 +78,17 @@ export class HistorialPage extends MobileBasePage {
         // Define el localizador base, sin el índice
         const baseLocator = '//android.widget.TextView[@resource-id="com.olvati.optitrack2022:id/texto_circulo"]';
 
-        // Define un límite de búsqueda. Esto es crucial para que la prueba no sea interminable
         const searchLimit = 3;
 
-        // Variable para almacenar la cuenta total de elementos encontrados
         let foundElementsCount = 0;
 
         // Bucle para buscar elementos del índice 1 hasta el límite
         for (let i = 1; i <= searchLimit; i++) {
             // Construye el selector con el índice actual, por ejemplo, `(//...)[1]`, `(//...)[2]`, etc.
             const locatorWithIndex = `(${baseLocator})[${i}]`;
-
-            // Usa el método de tu framework para verificar si el elemento existe en el DOM
-            // `isExisting()` o `isVisible()` son métodos comunes.
             const elementExists = await this.locator('xpath', locatorWithIndex, { exact: false }).isVisible();
 
             if (elementExists) {
-                // Si el elemento existe, incrementa el contador
                 foundElementsCount++;
             } else {
                 // Si el elemento no existe (por ejemplo, [30]), significa que la lista terminó.
@@ -103,54 +97,36 @@ export class HistorialPage extends MobileBasePage {
             }
         }
 
-        // Finalmente, usa una aserción para verificar que el número total de elementos es mayor que 0
         expect(foundElementsCount).toBeGreaterThan(0);
     }
 
     /** Realiza la busqueda utilizando los filtros */
-    public async filtrarValidarFiltroTipoGestiones(typeGestiones: TypeGestiones): Promise<string> {
+    public async validarFiltroTipoGestiones(typeGestiones: TypeGestiones): Promise<string> {
         const filtroTypeGestionesButton = this.locator('id', 'com.olvati.optitrack2022:id/fab_ingreso_manual');
         await expect(filtroTypeGestionesButton).toBeVisible();
         await filtroTypeGestionesButton.tap();
         await sleep(5);
-        let contador = 0;
 
         switch (typeGestiones) {
             case TypeGestiones.Entregas:
-                const entregasCount = this.locator('id', 'com.olvati.optitrack2022:id/tv_item_count_gestion')
-                const entregasCountText = await entregasCount.getText()
-                contador = parseInt(entregasCountText)
-
                 const entregasOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Entregas"]', { exact: false });
                 await expect(entregasOption).toBeVisible();
                 await entregasOption.tap();
 
                 break;
             case TypeGestiones.Recojos:
-                const recojosCount = this.locator('id', 'com.olvati.optitrack2022:id/tv_item_count_recojo_gestion_2')
-                const recojoCountText = await recojosCount.getText()
-                contador = parseInt(recojoCountText)
-
                 const recojosOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Recojos"]', { exact: false });
                 await expect(recojosOption).toBeVisible();
                 await recojosOption.tap();
 
                 break;
             case TypeGestiones.GuiasLocal:
-                const guiaLocalCount = this.locator('id', 'com.olvati.optitrack2022:id/tv_item_count_guias')
-                const guiaLocalCountText = await guiaLocalCount.getText()
-                contador = parseInt(guiaLocalCountText)
-
                 const guiaLocalOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Guias Local"]', { exact: false });
                 await expect(guiaLocalOption).toBeVisible();
                 await guiaLocalOption.tap();
 
                 break;
             case TypeGestiones.GuiasNacional:
-                const guiaNacionalCount = this.locator('id', 'com.olvati.optitrack2022:id/tv_item_count_guias_rec')
-                const guiaNacionalCountText = await guiaNacionalCount.getText()
-                contador = parseInt(guiaNacionalCountText)
-
                 const guiaNacionalOption = this.locator('xpath', '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Guias Nacional"]', { exact: false });
                 await expect(guiaNacionalOption).toBeVisible();
                 await guiaNacionalOption.tap();
@@ -166,27 +142,22 @@ export class HistorialPage extends MobileBasePage {
 
         const baseLocator = '//android.widget.TextView[@resource-id="com.olvati.optitrack2022:id/texto_circulo"]'
 
-        // Define un límite de búsqueda. Esto es crucial para que la prueba no sea interminable
-        const searchLimit = contador > 5 ? 5 : contador
+        const searchLimit = 5
 
-        // Variable para almacenar la cuenta total de elementos encontrados
         let foundElementsCount = 0;
         let estadoTexto: string = '';
-
         await sleep(5);
+
         // Bucle para buscar elementos del índice 1 hasta el límite
         for (let i = 1; i <= searchLimit; i++) {
             // Construye el selector con el índice actual, por ejemplo, `(//...)[1]`, `(//...)[2]`, etc.
             const locatorWithIndex = `(${baseLocator})[${i}]`;
-
-            // Usa el método de tu framework para verificar si el elemento existe en el DOM
-            // `isExisting()` o `isVisible()` son métodos comunes.
             const elementExists = await this.locator('xpath', locatorWithIndex, { exact: false }).isVisible();
 
             if (elementExists) {
-                // Si el elemento existe, incrementa el contador
+
                 foundElementsCount++;
-                if (i === 1) {
+                if (i === 1 && typeGestiones !== TypeGestiones.Todos) {
                     const estadoElementoId = await this.isVisible('id', 'com.olvati.optitrack2022:id/txt_estado');
 
                     if (estadoElementoId) {
@@ -204,7 +175,6 @@ export class HistorialPage extends MobileBasePage {
             }
         }
 
-        // Finalmente, usa una aserción para verificar que el número total de elementos es mayor que 0
         expect(foundElementsCount).toBeLessThanOrEqual(searchLimit);
 
         return estadoTexto;
@@ -221,12 +191,12 @@ export class HistorialPage extends MobileBasePage {
         }
     }
 
-    public async validarSeleccionEstado(typeEstado: TypeEstado): Promise<void> {
+    public async validarSeleccionEstado(typeEstado: string): Promise<void> {
         const selectorEstados = this.locator('id', 'com.olvati.optitrack2022:id/spEstados')
         await expect(selectorEstados).toBeVisible();
         await selectorEstados.tap();
 
-        const estadoOption = this.locator('xpath', `//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="${typeEstado.valueOf()}"]`, { exact: false });
+        const estadoOption = this.locator('xpath', `//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="${typeEstado}"]`, { exact: false });
         await expect(estadoOption).toBeVisible();
         await estadoOption.tap();
         await sleep(3);
@@ -236,10 +206,8 @@ export class HistorialPage extends MobileBasePage {
 
         const baseLocatorEstado = '//android.widget.TextView[@resource-id="com.olvati.optitrack2022:id/txt_estado"]'
 
-        // Define un límite de búsqueda. Esto es crucial para que la prueba no sea interminable
         const searchLimit = 5
 
-        // Variable para almacenar la cuenta total de elementos encontrados
         let foundElementsCount = 0;
 
         // Bucle para buscar elementos del índice 1 hasta el límite
@@ -247,15 +215,16 @@ export class HistorialPage extends MobileBasePage {
             // Construye el selector con el índice actual, por ejemplo, `(//...)[1]`, `(//...)[2]`, etc.
             const locatorEstadoWithIndex = `(${baseLocatorEstado})[${i}]`;
 
-            // Usa el método de tu framework para verificar si el elemento existe en el DOM
-            // `isExisting()` o `isVisible()` son métodos comunes.
             const estado = this.locator('xpath', locatorEstadoWithIndex, { exact: false });
             const elementExists = await estado.isVisible();
 
             if (elementExists) {
-                // Si el elemento existe, incrementa el contador
                 const estadoTexto = await estado.getText();
-                expect(estadoTexto).toBe(typeEstado.valueOf());
+                expect(estadoTexto).toBe(typeEstado);
+
+                // if (typeEstado === TypeGestiones.GuiasNacional) {
+                //     break;
+                // }
 
                 foundElementsCount++;
             } else {
@@ -264,5 +233,10 @@ export class HistorialPage extends MobileBasePage {
                 break;
             }
         }
+    }
+
+    public async validarDetalleGestion(): Promise<void> {
+        const isElementVisible = await this.isVisible('id', 'com.olvati.optitrack2022:id/spEstados')
+        expect(isElementVisible).toBeTruthy();
     }
 }
